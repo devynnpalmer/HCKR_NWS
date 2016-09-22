@@ -19,16 +19,17 @@ public class ArticleActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        
+        //displays article
         WebView webView = (WebView) findViewById(R.id.webView);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient());
 
         Intent i = getIntent();
-        String url = i.getStringExtra("articleUrl");
-        String content = i.getStringExtra("content");
+        String url = i.getStringExtra("articleUrl"); //gets url
+        String content = i.getStringExtra("content"); //gets content
 
-
+        //display
         webView.loadUrl(url);
     }
 
