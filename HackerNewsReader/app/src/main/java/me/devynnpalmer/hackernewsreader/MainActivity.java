@@ -32,18 +32,18 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
-    Map<Integer, String> articleURLs = new HashMap<Integer, String>();
+    Map<Integer, String> articleURLs = new HashMap<Integer, String>(); //fun stuff initialization
     Map<Integer, String> articleTitles = new HashMap<Integer, String>();
     ArrayList<Integer> articleIds = new ArrayList<Integer>();
 
-
-    SQLiteDatabase db;
+    SQLiteDatabase db; //database!
 
     ArrayList<String> titles = new ArrayList<String>();
     ArrayList<String> urls  = new ArrayList<String>();
     ArrayList<String> content = new ArrayList<String>();
-    ArrayAdapter arrayAdapter;
+    ArrayAdapter arrayAdapter; //more fun stuff initialization
 
+    //downloader
     public class DownloadTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
@@ -67,11 +67,11 @@ public class MainActivity extends AppCompatActivity {
 
                 JSONArray jsonArray = new JSONArray(result);
 
+                db.execSQL("DELETE FROM articles"); //delete from array
 
-                db.execSQL("DELETE FROM articles");
-
+                //fetches 20 articles
                 for(int i = 0; i < 20; i++) {
-                    String articleId = jsonArray.getString(i);
+                    String articleId = jsonArray.getString(i); //fetches article id for viewing
 
                     url = new URL("https://hacker-news.firebaseio.com/v0/item/" + articleId + ".json?print=pretty");
                     urlConnection = (HttpURLConnection) url.openConnection();
@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                     articleTitles.put(Integer.valueOf(articleId), articleTitle);
                     articleURLs.put(Integer.valueOf(articleId), articleURL);
 
+                    //insert into database
                     String sql = "INSERT INTO articles (articleId, url, title, content) VALUES (?, ?, ?, ?)";
                     SQLiteStatement statement = db.compileStatement(sql);
 
@@ -141,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
+            //update
             updateListView();
         }
     }
@@ -174,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         DownloadTask task = new DownloadTask();
 
         try {
-
+            //API
             task.execute("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty");
 
         } catch (Exception e) {
